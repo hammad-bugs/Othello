@@ -1,0 +1,449 @@
+#include<iostream>
+#include<conio.h>
+#include<stdlib.h>
+using namespace std;
+char othello[6][6]={{' ',' ',' ',' ',' ',' '},{' ',' ',' ',' ',' ',' '},{' ',' ',' ',' ',' ',' '},{' ',' ',' ',' ',' ',' '},{' ',' ',' ',' ',' ',' '},{' ',' ',' ',' ',' ',' '}};
+char swap1=' ',swap2=' ',swap3=' ',swap4=' ',swap5=' ',swap6=' ',swap7=' ',swap8=' ',swap9=' ';
+void placing(char a,int column, char player_variable);
+void board();
+void aswap(char a);
+void cswap(char a);
+bool winner(char player_variable);
+void rotation();
+void alreadyfilled(char player_variable);
+bool draw();
+void filling(int a,int b,char player_variable);
+char baari(char player_variable);
+int main()
+{
+	char player_variable;
+	bool playing=true, win, drew;
+	int player_turn=1;
+	
+	while(playing)
+	{
+		system("CLS");
+		cout<<"\nTHE FIRST PLAYER TO GET FIVE BALL IN A LINE WILL WIN.\nTHE LINE CAN BE HORIZONTAL,VERTICAL OR DIAGNAL\n";
+		board();
+		if (player_turn==1)
+		{
+			cout<<"It's Player 1's turn.\n";
+			player_variable='o';
+		}
+		else
+		{
+			cout<<"It's Player 2's turn.\n";
+			player_variable='x';
+		}
+		baari(player_variable);
+		win = winner(player_variable);
+		if (win)
+		{
+			if (player_turn==1)
+			{
+				cout<<"\nPLAYER 1 HAVE WON.\n";
+				board();
+			}
+			else
+			{
+				cout<<"\nPLAYER 2 HAVE WON.\n";
+				board();
+			}
+			playing=false;
+		}
+		drew= draw();
+		if ((drew==true)&&(win==false))
+		{
+			cout<<"\nMATCH IS DRAWN.\n";
+			board();
+			playing=false;
+		}
+		if (player_turn==1)
+		{
+			player_turn++;
+		}
+		else
+		{
+			player_turn--;
+		}
+	}
+	getch();
+	return 0;
+}
+
+
+void board(){
+	cout<<"      |1|2|3|  |4|5|6|\n\n";
+	char k='A';
+	for(int i=0;i<6;i++)
+	{
+		if(i==3)
+		{
+			cout<<"\n\n";
+		}
+		cout<<"|"<<k<<"|   ";
+		for(int j=0;j<6;j++)
+		{
+			cout<<"|"<<othello[i][j];
+			if(j==2)
+			{
+				cout<<"|  ";
+			}
+		}
+		cout<<"|\n";
+		k++;
+	}
+}
+
+
+char baari(char player_variable){
+	char comand[2];
+	cout<<"Where you want to put your ball: ";
+	cin>>comand;
+	char row =comand[0];
+	int column =comand[1]-48;
+	if ((row>='A') && (row<='F'))
+	{
+		if ((column>0) && (column<7))
+		{
+			switch(row)
+			{
+				case 'A':
+					placing('A',column,player_variable);
+					break;
+				case 'B':
+					placing('B',column,player_variable);
+					break;
+				case 'C':
+					placing('C',column,player_variable);
+					break;
+				case 'D':
+					placing('D',column,player_variable);
+					break;
+				case 'E':
+					placing('E',column,player_variable);
+					break;
+				case 'F':
+					placing('F',column,player_variable);
+					break;
+			}
+			system("cls");
+			board();
+			rotation();
+		}
+		else
+		{
+			cout<<"Selected Column out of range.\n";
+			baari(player_variable);
+		}
+	}
+	else{
+		cout<<"Selected Row out of range.\n";
+		baari(player_variable);
+	}
+}
+
+
+void rotation(){
+	char rotation_side;
+	int rotation_angle;
+	cout<<"\nFOR ROTATION THE BOARD IS LABELED AS:\n      |     |  |     |\n      |  A  |  |  B  |\n      |     |  |     |\n\n      |     |  |     |\n      |  C  |  |  D  |\n      |     |  |     |\n";
+	cout<<"\nEnter which part you want to rotate: ";
+	cin>>rotation_side;
+	if ((rotation_side>='A') || (rotation_side<='D'))
+	{
+		cout<<"\nEnter 1 for anti-clockwise roration and 2 for clockwise rotaion: ";
+		cin>>rotation_angle;
+		if (rotation_angle==1) 
+		{
+			switch(rotation_side)
+			{
+				case 'A':
+					aswap('A');
+					break;
+					
+				case 'B':
+					aswap('B');
+					break;
+					
+				case 'C':
+					aswap('C');
+					break;
+			
+				case 'D':
+					aswap('D');
+					break;
+			}	 	
+		}
+		else if (rotation_angle==2)
+		{
+			switch(rotation_side)
+			{
+				case 'A':
+					cswap('A');
+					break;
+				
+				case 'B':
+					cswap('B');
+					break;
+					
+				case 'C':
+					cswap('C');
+					break;
+					
+				case 'D':
+					cswap('D');
+					break;
+			}
+		}
+		else
+		{
+			cout<<"\nEnter 1 or 2 please.\n\n";
+			rotation();
+		}
+	}
+	else
+	{
+		cout<<"\nPlease select a valid part\n\n";
+		rotation();
+	}
+}
+
+
+void cswap(char b){
+	int k,a;
+	if(b=='A')
+	{
+		k=0;
+		a=0;
+	}
+	else if(b=='B')
+	{
+		k=3;
+		a=0;
+	}
+	else if(b=='C')
+	{
+		k=0;
+		a=3;
+	}
+	else
+	{
+		k=3;
+		a=3;
+	}
+	swap3=othello[a][k+0];
+	swap6=othello[a][k+1]; 
+	swap9=othello[a][k+2]; 
+	swap2=othello[a+1][k+0];
+	swap5=othello[a+1][k+1];
+	swap8=othello[a+1][k+2];
+	swap1=othello[a+2][k+0];
+	swap4=othello[a+2][k+1];
+	swap7=othello[a+2][k+2];
+	othello[a][k+0]=swap1;
+	othello[a][k+1]=swap2; 
+	othello[a][k+2]=swap3;
+	othello[a+2][k+0]=swap4;
+	othello[a+1][k+1]=swap5; 
+	othello[a+1][k+2]=swap6;
+	othello[a+2][k+0]=swap7;
+	othello[a+2][k+1]=swap8; 
+	othello[a+2][k+2]=swap9;
+}
+
+
+void aswap(char b){
+	int k,a;
+	if(b=='A')
+	{
+		a=0,k=0;
+	}
+	else if(b=='B')
+	{
+		k=3,a=0;
+	}
+	else if(b=='C')
+	{
+		k=0,a=3;
+	}
+	else
+	{
+		k=3,a=3;
+	}
+	swap1=othello[a][k+0];
+	swap2=othello[a][k+1]; 
+	swap3=othello[a][k+2];
+	swap4=othello[a+1][k+0];
+	swap5=othello[a+1][k+1]; 
+	swap6=othello[a+1][k+2];
+	swap7=othello[a+2][k+0];
+	swap8=othello[a+2][k+1]; 
+	swap9=othello[a+2][k+2];
+	othello[a][k+0]=swap3;
+	othello[a][k+1]=swap6; 
+	othello[a][k+2]=swap9; 
+	othello[a+1][k+0]=swap2;
+	othello[a+1][k+1]=swap5;
+	othello[a+1][k+2]=swap8;
+	othello[a+2][k+0]=swap1;
+	othello[a+2][k+1]=swap4;
+	othello[a+2][k+2]=swap7;
+}
+
+
+void placing(char a,int column, char player_variable){
+	a=(int)a-65;
+	switch(column)
+					{
+						case 1:
+							filling(a,0,player_variable);
+							break;
+						case 2:
+							filling(a,1,player_variable);
+							break;
+						case 3:
+							filling(a,2,player_variable);
+							break;
+						case 4:
+							filling(a,3,player_variable);
+							break;
+						case 5:
+							filling(a,4,player_variable);
+							break;
+						case 6:
+							filling(a,5,player_variable);
+							break;
+	}
+}
+
+
+void filling(int a,int b,char player_variable){
+	if((othello[a][b]=='x') || (othello[a][b]=='o'))
+	{
+		cout<<"\nThis place is already filled.\nSelect a different place.";
+		baari(player_variable);
+	}
+	else
+	{
+		othello[a][b]=player_variable;
+	}
+}
+
+
+bool winner(char player_variable){
+	bool flag=false;
+	int count=0,k=0;
+	for(int i=0;i<6;i++)
+	{
+		for(int j=0;j<6;j++)
+		{
+			if((othello[i][j]==player_variable)&&(othello[i][j+1]==player_variable))
+			{
+				count++;
+			}
+		}
+		if(count==4)
+		{
+			flag=true;
+			break;
+		}
+		else
+		{
+			count=0;
+		}
+		for(int l=0;l<6;l++)
+		{
+			if((othello[l][i] ==player_variable)&&(othello[l+1][i]==player_variable))
+			{
+				count++;
+			}
+		}
+		if (count==4)
+		{
+			flag=true;
+			break;
+		}
+		else
+		{
+			count=0;
+		}
+		if(count==4)
+		{
+			flag=true;
+			break;
+		}
+		else
+		{
+			count=0;
+		}
+	}
+	for (int i=0;i<6;i++)
+	{
+		for(int j=0;j<6;j++)
+		{
+			if((othello[i][j]==player_variable)&&(othello[i+1][j+1]==player_variable))
+			{
+				count++;
+			}
+		}
+	}
+		if(count==4)
+		{
+			flag=true;
+		}
+		else
+		{
+			count=0;
+		}
+	for(int i=0;i<6;i++)
+	{
+		for(int j=0;j<6;j++)
+		{
+			if((othello[i][j]==player_variable)&&(othello[i+1][j-1]==player_variable))
+			{
+				count++;
+			}
+		}
+	}
+		if(count==4)
+		{
+			flag=true;
+		}
+		else
+		{
+			count=0;
+		}
+	if (flag==true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+bool draw(){
+	int total_filled=0;
+	char othello[6][6];
+	for (int i=0;i<6;i++)
+	{
+		for(int j=0;j<6;j++)
+		{
+			if ((othello[i][j]=='x')||(othello[i][j]=='o'))
+			{
+				total_filled++;
+			}
+		}
+	}
+	if (total_filled==36)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

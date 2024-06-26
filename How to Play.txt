@@ -1,0 +1,2 @@
+Each Turn a player has to put his mark on any block of the four boards and rotate any of the block to 90 degrees either clockwise or anti-clockwise.
+They keep on doing so untill any of the two players made a line of five marks. That line could be horizontal vertical or diagnal 
